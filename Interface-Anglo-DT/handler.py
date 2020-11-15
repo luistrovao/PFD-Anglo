@@ -250,6 +250,11 @@ class Manipulador():
         self.Stack.set_visible_child_name('view_inicial')
 
     def on_escolhe_in_out_clicked(self, button):
+
+        self.confirmar.set_label("Base Pré-Selecionada")
+        self.confirmar.set_sensitive(True)
+        self.avancar.set_sensitive(False)
+
         self.Stack.set_visible_child_name('view_inicial')
 
         self.lista_entradas.clear()
@@ -329,11 +334,14 @@ class Manipulador():
 
         self.base_c = self.filtro.funcoes["bases_c"](self.base)
 
+        self.base = self.filtro.funcoes['nao_numerico'](self.base)
+        self.base_c = self.filtro.funcoes['nao_numerico'](self.base_c)
+
         if self.ret_negativo.get_active():
-            self.base = self.filtro.funcoes['nao_numerico'](self.base)
+
             self.base = self.filtro.funcoes['nao-negativo'](self.base)
-            self.base_c = self.filtro.funcoes['nao_numerico'](self.base_c)
             self.base_c = self.filtro.funcoes['nao-negativo'](self.base_c)
+
 
         base_cp = self.base_c["Potencia_Ativa_Total"]
 
@@ -649,14 +657,14 @@ class Manipulador():
         else:
             Y1 = dados_dt[0][1].loc[:, self.lista_saidas[self.combo_box.get_active()][0]]
 
-        if len(Y1) < 200:
+        if len(Y1) < 100:
             X = range(len(Y1))
         else:
-            X = range(200)
+            X = range(100)
 
         Y2 = previsoes_dt[0][self.combo_box.get_active()]
-        Z1 = Y1[0:200]
-        Z2 = Y2[0:200]
+        Z1 = Y1[0:100]
+        Z2 = Y2[0:100]
         ax.plot(X, Z1, "ro-", label="Dados Reais", linewidth=1)
         ax.plot(X, Z2, "bo--", label="Dados do Modelo", linewidth=1)
         ax.grid(True)
@@ -697,7 +705,7 @@ class Manipulador():
     def estima_paralelo(self):
 
         outdir = './modelos'
-        nome_modelo = 'model_DT1.pkl'
+        nome_modelo = 'model_DT.pkl'
         fullname = os.path.join(outdir, nome_modelo)
 
         with open(fullname, 'rb') as file:
