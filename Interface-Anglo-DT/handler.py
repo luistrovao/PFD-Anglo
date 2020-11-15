@@ -143,6 +143,7 @@ class Manipulador():
         self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.combo_box: Gtk.ComboBoxText = Builder.get_object("combo_box")
         self.flag_combo = False
+        self.N_pontos: Gtk.Entry = Builder.get_object("n_pontos")
 
         self.Stack.set_visible_child_name("view_inicial")
 
@@ -657,14 +658,16 @@ class Manipulador():
         else:
             Y1 = dados_dt[0][1].loc[:, self.lista_saidas[self.combo_box.get_active()][0]]
 
-        if len(Y1) < 100:
+        n_pts = int(self.N_pontos.get_text())
+
+        if len(Y1) < n_pts:
             X = range(len(Y1))
         else:
-            X = range(100)
+            X = range(n_pts)
 
         Y2 = previsoes_dt[0][self.combo_box.get_active()]
-        Z1 = Y1[0:100]
-        Z2 = Y2[0:100]
+        Z1 = Y1[0:n_pts]
+        Z2 = Y2[0:n_pts]
         ax.plot(X, Z1, "ro-", label="Dados Reais", linewidth=1)
         ax.plot(X, Z2, "bo--", label="Dados do Modelo", linewidth=1)
         ax.grid(True)
